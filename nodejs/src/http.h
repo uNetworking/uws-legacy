@@ -1,3 +1,5 @@
+#include <iostream>
+
 Persistent<Object> reqTemplate, resTemplate;
 Persistent<Function> httpPersistent;
 

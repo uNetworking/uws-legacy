@@ -5,7 +5,6 @@
       'sources': [
         'src/Extensions.cpp',
         'src/Group.cpp',
-        'src/WebSocketImpl.cpp',
         'src/Networking.cpp',
         'src/Hub.cpp',
         'src/Node.cpp',

@@ -1,4 +1,4 @@
-CPP_SHARED := -DUSE_LIBUV -std=c++11 -O3 -I ../src -shared -fPIC ../src/Extensions.cpp ../src/Group.cpp ../src/WebSocketImpl.cpp ../src/Networking.cpp ../src/Hub.cpp ../src/Node.cpp ../src/WebSocket.cpp ../src/HTTPSocket.cpp ../src/Socket.cpp ../src/Epoll.cpp src/addon.cpp
+CPP_SHARED := -DUSE_LIBUV -std=c++11 -O3 -I ../uWebSockets/src -shared -fPIC ../uWebSockets/src/Extensions.cpp ../uWebSockets/src/Group.cpp ../uWebSockets/src/Networking.cpp ../uWebSockets/src/Hub.cpp ../uWebSockets/src/Node.cpp ../uWebSockets/src/WebSocket.cpp ../uWebSockets/src/HTTPSocket.cpp ../uWebSockets/src/Socket.cpp ../uWebSockets/src/Epoll.cpp src/addon.cpp
 CPP_OSX := -stdlib=libc++ -mmacosx-version-min=10.7 -undefined dynamic_lookup
 
 default:
@@ -7,9 +7,9 @@ default:
 	NODE=targets/node-v5.11.0 ABI=47 make `(uname -s)`
 	NODE=targets/node-v6.0.0 ABI=48 make `(uname -s)`
 	NODE=targets/node-v7.1.0 ABI=51 make `(uname -s)`
-	cp ../README.md dist/README.md
-	cp ../LICENSE dist/LICENSE
-	cp -r ../src dist/
+	cp README.md dist/README.md
+	cp ../uWebSockets/LICENSE dist/LICENSE
+	cp -r ../uWebSockets/src dist/
 	cp src/addon.cpp dist/src/addon.cpp
 	cp src/addon.h dist/src/addon.h
 	cp src/http.h dist/src/http.h
