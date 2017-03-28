@@ -1,4 +1,4 @@
-var WebSocket = require('./dist/uws');
+var WebSocket = require('../dist/uws');
 var ws = new WebSocket('ws://echo.websocket.org');
 
 ws.on('open', function open() {

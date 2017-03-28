@@ -1,6 +1,6 @@
 'use strict';
 
-const WebSocketServer = require('./dist/uws').Server;
+const WebSocketServer = require('../dist/uws').Server;
 const wss = new WebSocketServer({ port: 3000 });
 
 function onMessage(message) {
