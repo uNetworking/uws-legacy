@@ -1,6 +1,6 @@
 var koa = require('koa');
 var app = koa();
-var uhttp = require('./dist/uws').http;
+var uhttp = require('../dist/uws').http;
 
 app.use(function *() {
   this.body = 'Hello World';

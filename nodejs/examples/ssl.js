@@ -1,6 +1,6 @@
 const https = require('https');
 const fs = require('fs');
-const wsServer = require('./dist/uws').Server;
+const wsServer = require('../dist/uws').Server;
 
 const options = {
   key: fs.readFileSync('/home/alexhultman/µWebSockets.key.pem'),

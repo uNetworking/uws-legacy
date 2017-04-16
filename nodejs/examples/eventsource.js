@@ -1,6 +1,6 @@
 'use strict';
 
-const uws = require('./dist/uws');
+const uws = require('../dist/uws');
 
 // the page that will connect back over EventSource
 const document = '<script>var es = new EventSource(\'/eventSource\'); es.onmessage = function(message) {document.write(\'<p><b>Server sent event:</b> \' + message.data + \'</p>\');};</script>';

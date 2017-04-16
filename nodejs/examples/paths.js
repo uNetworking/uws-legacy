@@ -1,7 +1,7 @@
 // example showing usage with different behavior on a path basis
 
 const http = require('http');
-const WebSocketServer = require('./dist/uws').Server;
+const WebSocketServer = require('../dist/uws').Server;
 
 const httpServer = http.createServer((request, response) => {
   response.end();

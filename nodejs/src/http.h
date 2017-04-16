@@ -37,7 +37,6 @@ struct HttpServer {
             args.GetReturnValue().Set(args.This()->GetInternalField(4));
         }
 
-        // todo: add all cases
         static void method(Local<String> property, const PropertyCallbackInfo<Value> &args) {
             //std::cout << "method" << std::endl;
             long methodId = ((long) args.This()->GetAlignedPointerFromInternalField(3)) >> 1;
@@ -45,8 +44,29 @@ struct HttpServer {
             case uWS::HttpMethod::METHOD_GET:
                 args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "GET", String::kNormalString, 3));
                 break;
+            case uWS::HttpMethod::METHOD_PUT:
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "PUT", String::kNormalString, 3));
+                break;
             case uWS::HttpMethod::METHOD_POST:
                 args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "POST", String::kNormalString, 4));
+                break;
+            case uWS::HttpMethod::METHOD_HEAD:
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "HEAD", String::kNormalString, 4));
+                break;
+            case uWS::HttpMethod::METHOD_PATCH:
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "PATCH", String::kNormalString, 5));
+                break;
+            case uWS::HttpMethod::METHOD_TRACE:
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "TRACE", String::kNormalString, 5));
+                break;
+            case uWS::HttpMethod::METHOD_DELETE:
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "DELETE", String::kNormalString, 6));
+                break;
+            case uWS::HttpMethod::METHOD_OPTIONS:
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "OPTIONS", String::kNormalString, 7));
+                break;
+            case uWS::HttpMethod::METHOD_CONNECT:
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "CONNECT", String::kNormalString, 7));
                 break;
             }
         }
