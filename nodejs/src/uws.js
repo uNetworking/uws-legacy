@@ -373,7 +373,7 @@ class Server extends EventEmitter {
             }
         }
 
-        this.serverGroup = native.server.group.create(nativeOptions, options.maxPayload === undefined ? 1048576 : options.maxPayload);
+        this.serverGroup = native.server.group.create(nativeOptions, options.maxPayload === undefined ? 16777216 : options.maxPayload);
 
         // can these be made private?
         this._upgradeCallback = noop;

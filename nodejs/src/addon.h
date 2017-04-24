@@ -76,7 +76,7 @@ struct GroupData {
 
 template <bool isServer>
 void createGroup(const FunctionCallbackInfo<Value> &args) {
-    uWS::Group<isServer> *group = hub.createGroup<isServer>(args[0]->IntegerValue());
+    uWS::Group<isServer> *group = hub.createGroup<isServer>(args[0]->IntegerValue(), args[1]->IntegerValue());
     group->setUserData(new GroupData);
     args.GetReturnValue().Set(External::New(args.GetIsolate(), group));
 }
