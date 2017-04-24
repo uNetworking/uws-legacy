@@ -431,6 +431,10 @@ class Server extends EventEmitter {
                     this._lastUpgradeListener = false;
                 }
             });
+
+            this.httpServer.on('error', (err) => {
+                this.emit('error', err);
+            });
         }
 
         native.server.group.onDisconnection(this.serverGroup, (external, code, message, webSocket) => {
