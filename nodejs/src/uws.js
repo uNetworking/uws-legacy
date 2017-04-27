@@ -518,7 +518,7 @@ class Server extends EventEmitter {
         }
     }
 
-    close() {
+    close(cb) {
         if (this._upgradeListener && this.httpServer) {
             this.httpServer.removeListener('upgrade', this._upgradeListener);
 
@@ -530,6 +530,11 @@ class Server extends EventEmitter {
         if (this.serverGroup) {
             native.server.group.close(this.serverGroup);
             this.serverGroup = null;
+        }
+
+        if (typeof cb === 'function') {
+            // compatibility hack, 15 seconds timeout
+            setTimeout(cb, 20000);
         }
     }
 
