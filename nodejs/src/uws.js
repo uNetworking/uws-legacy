@@ -3,6 +3,7 @@
 const http = require('http');
 const EventEmitter = require('events');
 const EE_ERROR = 'Registering more than one listener to a WebSocket is not supported.';
+const DEFAULT_PAYLOAD_LIMIT = 16777216;
 
 function noop() {}
 
@@ -44,7 +45,7 @@ native.setNoop(noop);
 
 var _upgradeReq = null;
 
-const clientGroup = native.client.group.create();
+const clientGroup = native.client.group.create(0, DEFAULT_PAYLOAD_LIMIT);
 
 native.client.group.onConnection(clientGroup, (external) => {
     const webSocket = native.getUserData(external);
@@ -373,7 +374,7 @@ class Server extends EventEmitter {
             }
         }
 
-        this.serverGroup = native.server.group.create(nativeOptions, options.maxPayload === undefined ? 16777216 : options.maxPayload);
+        this.serverGroup = native.server.group.create(nativeOptions, options.maxPayload === undefined ? DEFAULT_PAYLOAD_LIMIT : options.maxPayload);
 
         // can these be made private?
         this._upgradeCallback = noop;
