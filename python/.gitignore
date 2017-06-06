@@ -1,0 +1,6 @@
+build/*
+*.pyc
+uWebSockets
+dist/*
+uWebSockets.egg-info/*
+
