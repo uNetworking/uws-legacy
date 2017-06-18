@@ -7,6 +7,7 @@ default:
 	NODE=targets/node-v5.11.0 ABI=47 make `(uname -s)`
 	NODE=targets/node-v6.0.0 ABI=48 make `(uname -s)`
 	NODE=targets/node-v7.1.0 ABI=51 make `(uname -s)`
+	NODE=targets/node-v8.1.2 ABI=57 make `(uname -s)`
 	cp README.md dist/README.md
 	cp ../uWebSockets/LICENSE dist/LICENSE
 	cp -r ../uWebSockets/src dist/
@@ -21,6 +22,7 @@ targets:
 	curl https://nodejs.org/dist/v5.11.0/node-v5.11.0-headers.tar.gz | tar xz -C targets
 	curl https://nodejs.org/dist/v6.0.0/node-v6.0.0-headers.tar.gz | tar xz -C targets
 	curl https://nodejs.org/dist/v7.1.0/node-v7.1.0-headers.tar.gz | tar xz -C targets
+	curl https://nodejs.org/dist/v8.1.2/node-v8.1.2-headers.tar.gz | tar xz -C targets
 Linux:
 	g++ $(CPP_SHARED) -static-libstdc++ -static-libgcc -I $$NODE/include/node -s -o dist/uws_linux_$$ABI.node
 Darwin:
