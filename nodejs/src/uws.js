@@ -5,6 +5,8 @@ const EventEmitter = require('events');
 const EE_ERROR = 'Registering more than one listener to a WebSocket is not supported.';
 const DEFAULT_PAYLOAD_LIMIT = 16777216;
 
+let _upgradeReq = null;
+
 function noop() {}
 
 function abortConnection(socket, code, name) {
@@ -12,7 +14,7 @@ function abortConnection(socket, code, name) {
 }
 
 function emitConnection(ws) {
-    this.emit('connection', ws);
+    this.emit('connection', ws, _upgradeReq);
 }
 
 function onServerMessage(message, webSocket) {
@@ -42,8 +44,6 @@ const native = (() => {
 })();
 
 native.setNoop(noop);
-
-var _upgradeReq = null;
 
 const clientGroup = native.client.group.create(0, DEFAULT_PAYLOAD_LIMIT);
 
