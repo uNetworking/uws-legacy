@@ -1,4 +1,12 @@
 # THIS IS *NOT* AN ELECTRON MODULE
+`uws` is a replacement module for `ws` which allows, but doesn't guarantee (certainly not when paired with Socket.IO), significant performance and memory-usage improvements. This module is specifically *only* compatible with Node.js and is installed *only* like so:
+
+`npm install uws`
+
+* uws *can* use node-gyp and *can* recompile itself at installation but does *not* require so.
+* npm installation never fails, but `require('uws')` will throw if all of the below points hold true:
+  * There was no C++11 compiler available at installation.
+  * Your system is not an official **Tier 1** Node.js platform.
 
 ## Usage
 `uws` tries to mimic `ws` as closely as possible without sacrificing too much performance. In most cases you simply swap `require('ws')` with `require('uws')`:
@@ -25,10 +33,3 @@ There are some important incompatibilities with `ws` though, we aim to be ~90% c
 * `webSocket._socket.remote...` might fail, you need to cache it at connection.
 * `webSocket` acts like an `EventEmitter` with one listener per event maximum.
 * `webSocket.upgradeReq` is only valid during execution of the connection handler. If you want to keep properties of the upgradeReq for the entire lifetime of the webSocket you better attach that specific property to the webSocket at connection.
-
-## Installation
-[![](https://nodei.co/npm/uws.png)](https://www.npmjs.com/package/uws)
-
-At installation `uws` will try to recompile itself using the system's C++11 compiler (GCC 4.8+, Clang 3.3, VC++ 2015+).
-If this fails it will silently fall back to using the precompiled binaries.
-NPM installation will never fail but `require('uws')` will throw if it cannot properly load the binary module.
