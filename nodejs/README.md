@@ -1,3 +1,5 @@
+# THIS IS *NOT* AN ELECTRON MODULE
+
 ## Usage
 `uws` tries to mimic `ws` as closely as possible without sacrificing too much performance. In most cases you simply swap `require('ws')` with `require('uws')`:
 
