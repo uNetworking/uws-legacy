@@ -1,6 +1,6 @@
 {
   "name": "uws",
-  "version": "9.14.0",
+  "version": "10.14.0",
   "scripts": {
     "install": "node-gyp rebuild > build_log.txt 2>&1 || exit 0"
   },
@@ -13,11 +13,11 @@
     "tiny",
     "websockets"
   ],
-  "homepage": "https://github.com/uWebSockets/uWebSockets",
+  "homepage": "https://github.com/uNetworking/uWebSockets",
   "license": "Zlib",
   "author": "Alex Hultman <alexhultman@gmail.com> (https://github.com/alexhultman)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/uWebSockets/uWebSockets.git"
+    "url": "https://github.com/uNetworking/uWebSockets.git"
   }
 }
