@@ -272,7 +272,7 @@ class WebSocket {
 
     ping(message, options, dontFailWhenClosed) {
         if (this.external) {
-            native.server.send(this.external, message, WebSocketClient.OPCODE_PING);
+            native.server.send(this.external, message, WebSocketClient.OPCODE_PING, false);
         }
     }
 
@@ -283,7 +283,7 @@ class WebSocket {
         }
     }
 
-    send(message, options, cb) {
+    send(message, options, cb, compress) {
         if (this.external) {
             if (typeof options === 'function') {
                 cb = options;
@@ -294,7 +294,7 @@ class WebSocket {
 
             native.server.send(this.external, message, binary ? WebSocketClient.OPCODE_BINARY : WebSocketClient.OPCODE_TEXT, cb ? (() => {
                 process.nextTick(cb);
-            }) : undefined);
+            }) : undefined, compress);
         } else if (cb) {
             cb(new Error('not opened'));
         }
@@ -318,7 +318,7 @@ class WebSocketClient extends WebSocket {
 
     ping(message, options, dontFailWhenClosed) {
         if (this.external) {
-            native.client.send(this.external, message, WebSocketClient.OPCODE_PING);
+            native.client.send(this.external, message, WebSocketClient.OPCODE_PING, false);
         }
     }
 
@@ -329,7 +329,7 @@ class WebSocketClient extends WebSocket {
         }
     }
 
-    send(message, options, cb) {
+    send(message, options, cb, compress) {
         if (this.external) {
             if (typeof options === 'function') {
                 cb = options;
@@ -340,7 +340,7 @@ class WebSocketClient extends WebSocket {
 
             native.client.send(this.external, message, binary ? WebSocketClient.OPCODE_BINARY : WebSocketClient.OPCODE_TEXT, cb ? (() => {
                 process.nextTick(cb);
-            }) : undefined);
+            }) : undefined, compress);
         } else if (cb) {
             cb(new Error('not opened'));
         }
