@@ -181,9 +181,11 @@ void send(const FunctionCallbackInfo<Value> &args)
         sc->jsCallback.Reset(args.GetIsolate(), Local<Function>::Cast(args[3]));
         sc->isolate = args.GetIsolate();
     }
+    
+    bool compress = args[4]->BooleanValue();
 
     unwrapSocket<isServer>(args[0].As<External>())->send(nativeString.getData(),
-                           nativeString.getLength(), opCode, callback, sc);
+                           nativeString.getLength(), opCode, callback, sc, compress);
 }
 
 void connect(const FunctionCallbackInfo<Value> &args) {
