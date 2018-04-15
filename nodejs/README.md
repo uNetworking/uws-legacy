@@ -1,4 +1,4 @@
-# THIS IS *NOT* AN ELECTRON MODULE
+# UWS IS *NOT* AN ELECTRON MODULE
 `uws` is a replacement module for `ws` which allows, but doesn't guarantee (certainly not when paired with Socket.IO), significant performance and memory-usage improvements. This module is specifically *only* compatible with Node.js and is installed *only* like so:
 
 `npm install uws`
@@ -7,6 +7,11 @@
 * npm installation never fails, but `require('uws')` will throw if all of the below points hold true:
   * There was no C++11 compiler available at installation.
   * Your system is not an official **Tier 1** Node.js platform.
+  
+## Keep in mind
+You can't fix a clogged up system by only fixing part of the problem. Swapping to uws can have *dramatical* effects if your entire pipeline works well. Socket.IO, SocketCluster and other such mass bloat will **not** give you desired results as those projects already, from the start, **are** the bottleneck.
+
+[Read more about other horrible Node.js projects here](https://github.com/alexhultman/The-Node.js-performance-palette)
 
 ## Usage
 `uws` tries to mimic `ws` as closely as possible without sacrificing too much performance. In most cases you simply swap `require('ws')` with `require('uws')`:
@@ -33,6 +38,3 @@ There are some important incompatibilities with `ws` though, we aim to be ~90% c
 * `webSocket._socket.remote...` might fail, you need to cache it at connection.
 * `webSocket` acts like an `EventEmitter` with one listener per event maximum.
 * `webSocket.upgradeReq` is only valid during execution of the connection handler. If you want to keep properties of the upgradeReq for the entire lifetime of the webSocket you better attach that specific property to the webSocket at connection.
-
-## Keep in mind
-You can't fix a clogged up system by only fixing part of the pipeline. Swapping to uws can have dramatical effects if your entire pipeline works well. Examples where uws does minimal difference involve when paired with Socket.IO, SocketCluster or any other such mass bloat. Socket.IO has a 200x overhead to uws and will not see any real improvement with uws. SocketCluster has a 10x overhead and might see a tiny improvement.
