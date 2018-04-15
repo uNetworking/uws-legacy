@@ -33,3 +33,6 @@ There are some important incompatibilities with `ws` though, we aim to be ~90% c
 * `webSocket._socket.remote...` might fail, you need to cache it at connection.
 * `webSocket` acts like an `EventEmitter` with one listener per event maximum.
 * `webSocket.upgradeReq` is only valid during execution of the connection handler. If you want to keep properties of the upgradeReq for the entire lifetime of the webSocket you better attach that specific property to the webSocket at connection.
+
+## Keep in mind
+You can't fix a clogged up system by only fixing part of the pipeline. Swapping to uws can have dramatical effects if your entire pipeline works well. Examples where uws does minimal difference involve when paired with Socket.IO, SocketCluster or any other such mass bloat. Socket.IO has a 200x overhead to uws and will not see any real improvement with uws. SocketCluster has a 10x overhead and might see a tiny improvement.
