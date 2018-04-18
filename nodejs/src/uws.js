@@ -290,7 +290,7 @@ class WebSocket {
                 options = null;
             }
 
-            const binary = options && options.binary || typeof message !== 'string';
+            const binary = options && typeof options.binary === 'boolean' ? options.binary : typeof message !== 'string';
 
             native.server.send(this.external, message, binary ? WebSocketClient.OPCODE_BINARY : WebSocketClient.OPCODE_TEXT, cb ? (() => {
                 process.nextTick(cb);
@@ -336,7 +336,7 @@ class WebSocketClient extends WebSocket {
                 options = null;
             }
 
-            const binary = options && options.binary || typeof message !== 'string';
+            const binary = options && typeof options.binary === 'boolean' ? options.binary : typeof message !== 'string';
 
             native.client.send(this.external, message, binary ? WebSocketClient.OPCODE_BINARY : WebSocketClient.OPCODE_TEXT, cb ? (() => {
                 process.nextTick(cb);
