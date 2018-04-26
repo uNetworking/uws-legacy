@@ -28,7 +28,7 @@ struct HttpServer {
                 NativeString nativeString(property);
                 uWS::Header header = req->getHeader(nativeString.getData(), nativeString.getLength());
                 if (header) {
-                    args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) header.value, String::kNormalString, header.valueLength));
+                    args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) header.value, NewStringType::kNormal, header.valueLength).ToLocalChecked());
                 }
             }
         }
@@ -42,31 +42,31 @@ struct HttpServer {
             long methodId = ((long) args.This()->GetAlignedPointerFromInternalField(3)) >> 1;
             switch (methodId) {
             case uWS::HttpMethod::METHOD_GET:
-                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "GET", String::kNormalString, 3));
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "GET", NewStringType::kNormal, 3).ToLocalChecked());
                 break;
             case uWS::HttpMethod::METHOD_PUT:
-                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "PUT", String::kNormalString, 3));
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "PUT", NewStringType::kNormal, 3).ToLocalChecked());
                 break;
             case uWS::HttpMethod::METHOD_POST:
-                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "POST", String::kNormalString, 4));
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "POST", NewStringType::kNormal, 4).ToLocalChecked());
                 break;
             case uWS::HttpMethod::METHOD_HEAD:
-                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "HEAD", String::kNormalString, 4));
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "HEAD", NewStringType::kNormal, 4).ToLocalChecked());
                 break;
             case uWS::HttpMethod::METHOD_PATCH:
-                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "PATCH", String::kNormalString, 5));
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "PATCH", NewStringType::kNormal, 5).ToLocalChecked());
                 break;
             case uWS::HttpMethod::METHOD_TRACE:
-                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "TRACE", String::kNormalString, 5));
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "TRACE", NewStringType::kNormal, 5).ToLocalChecked());
                 break;
             case uWS::HttpMethod::METHOD_DELETE:
-                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "DELETE", String::kNormalString, 6));
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "DELETE", NewStringType::kNormal, 6).ToLocalChecked());
                 break;
             case uWS::HttpMethod::METHOD_OPTIONS:
-                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "OPTIONS", String::kNormalString, 7));
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "OPTIONS", NewStringType::kNormal, 7).ToLocalChecked());
                 break;
             case uWS::HttpMethod::METHOD_CONNECT:
-                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "CONNECT", String::kNormalString, 7));
+                args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "CONNECT", NewStringType::kNormal, 7).ToLocalChecked());
                 break;
             }
         }
@@ -96,7 +96,7 @@ struct HttpServer {
             reqTemplateLocal->PrototypeTemplate()->Set(String::NewFromUtf8(isolate, "resume"), FunctionTemplate::New(isolate, Request::resume));
             reqTemplateLocal->PrototypeTemplate()->Set(String::NewFromUtf8(isolate, "socket"), FunctionTemplate::New(isolate, Request::socket));
 
-            Local<Object> reqObjectLocal = reqTemplateLocal->GetFunction()->NewInstance();
+            Local<Object> reqObjectLocal = reqTemplateLocal->GetFunction()->NewInstance(isolate->GetCurrentContext()).ToLocalChecked();
 
             Local<ObjectTemplate> headersTemplate = ObjectTemplate::New(isolate);
             headersTemplate->SetNamedPropertyHandler(Request::headers);
@@ -193,7 +193,7 @@ struct HttpServer {
             resTemplateLocal->PrototypeTemplate()->Set(String::NewFromUtf8(isolate, "on"), FunctionTemplate::New(isolate, Response::on));
             resTemplateLocal->PrototypeTemplate()->Set(String::NewFromUtf8(isolate, "setHeader"), FunctionTemplate::New(isolate, Response::setHeader));
             resTemplateLocal->PrototypeTemplate()->Set(String::NewFromUtf8(isolate, "getHeader"), FunctionTemplate::New(isolate, Response::getHeader));
-            return resTemplateLocal->GetFunction()->NewInstance();
+            return resTemplateLocal->GetFunction()->NewInstance(isolate->GetCurrentContext()).ToLocalChecked();
         }
     };
 
@@ -224,7 +224,7 @@ struct HttpServer {
             // store url & method (needed by Koa and Express)
             long methodId = req.getMethod() << 1;
             reqObject->SetAlignedPointerInInternalField(3, (void *) methodId);
-            reqObject->SetInternalField(4, String::NewFromOneByte(isolate, (uint8_t *) req.getUrl().value, String::kNormalString, req.getUrl().valueLength));
+            reqObject->SetInternalField(4, String::NewFromOneByte(isolate, (uint8_t *) req.getUrl().value, NewStringType::kNormal, req.getUrl().valueLength).ToLocalChecked());
 
             Local<Value> argv[] = {reqObject, resObject};
             Local<Function>::New(isolate, *httpRequestCallback)->Call(isolate->GetCurrentContext()->Global(), 2, argv);
@@ -290,7 +290,7 @@ struct HttpServer {
 
         Local<Object> newInstance;
         if (!args.IsConstructCall()) {
-            args.GetReturnValue().Set(newInstance = Local<Function>::New(args.GetIsolate(), httpPersistent)->NewInstance());
+            args.GetReturnValue().Set(newInstance = Local<Function>::New(args.GetIsolate(), httpPersistent)->NewInstance(isolate->GetCurrentContext()).ToLocalChecked());
         } else {
             args.GetReturnValue().Set(newInstance = args.This());
         }
@@ -317,14 +317,15 @@ struct HttpServer {
         Isolate *isolate = args.GetIsolate();
         if (args[0]->IsFunction()) {
             Local<Function> express = Local<Function>::Cast(args[0]);
-            express->Get(String::NewFromUtf8(isolate, "request"))->ToObject()->SetPrototype(Local<Object>::New(args.GetIsolate(), reqTemplate)->GetPrototype());
-            express->Get(String::NewFromUtf8(isolate, "response"))->ToObject()->SetPrototype(Local<Object>::New(args.GetIsolate(), resTemplate)->GetPrototype());
+            Local<Context> context = args.GetIsolate()->GetCurrentContext();
+            express->Get(String::NewFromUtf8(isolate, "request"))->ToObject()->SetPrototype(context, Local<Object>::New(args.GetIsolate(), reqTemplate)->GetPrototype());
+            express->Get(String::NewFromUtf8(isolate, "response"))->ToObject()->SetPrototype(context, Local<Object>::New(args.GetIsolate(), resTemplate)->GetPrototype());
 
             // also change app.listen?
 
             // change prototypes back?
 
-            args.GetReturnValue().Set(express->NewInstance());
+            args.GetReturnValue().Set(express->NewInstance(context).ToLocalChecked());
         }
     }
 
