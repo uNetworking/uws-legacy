@@ -190,6 +190,14 @@ class WebSocket {
                 this.internalOnMessage = noop;
                 f(message);
             };
+        } else if (eventName === 'open') {
+            if (this.internalOnOpen !== noop) {
+                throw Error(EE_ERROR);
+            }
+            this.internalOnOpen = () => {
+                this.internalOnOpen = noop;
+                f();
+            };
         } else if (eventName === 'close') {
             if (this.internalOnClose !== noop) {
                 throw Error(EE_ERROR);
@@ -222,6 +230,9 @@ class WebSocket {
         if (!eventName || eventName === 'message') {
             this.internalOnMessage = noop;
         }
+        if (!eventName || eventName === 'open') {
+            this.internalOnOpen = noop;
+        }
         if (!eventName || eventName === 'close') {
             this.internalOnClose = noop;
         }
@@ -237,6 +248,8 @@ class WebSocket {
     removeListener(eventName, cb) {
         if (eventName === 'message' && this.internalOnMessage === cb) {
             this.internalOnMessage = noop;
+        } else if (eventName === 'open' && this.internalOnOpen === cb) {
+            this.internalOnOpen = noop;
         } else if (eventName === 'close' && this.internalOnClose === cb) {
             this.internalOnClose = noop;
         } else if (eventName === 'ping' && this.onping === cb) {
