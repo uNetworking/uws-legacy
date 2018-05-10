@@ -1,4 +1,5 @@
-# UWS IS *NOT* AN ELECTRON MODULE
+# 1. UWS IS *NOT* AN ELECTRON MODULE
+# 2. DO *NOT* NAG ABOUT OR DEMAND INSTANT NEW NODE.JS VERSION SUPPORT
 `uws` is a replacement module for `ws` which allows, but doesn't guarantee (certainly not when paired with Socket.IO), significant performance and memory-usage improvements. This module is specifically *only* compatible with Node.js and is installed *only* like so:
 
 `npm install uws`
