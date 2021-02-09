@@ -11,8 +11,8 @@ using namespace v8;
 Isolate *isolate;
 
 int IntegerValue(Local<Value> value) {
-    long int ret = 0;
-    Maybe<long int> m = value->IntegerValue(isolate->GetCurrentContext());
+    int64_t ret = 0;
+    Maybe<int64_t> m = value->IntegerValue(isolate->GetCurrentContext());
     m.To(&ret);
     return ret;
 }
