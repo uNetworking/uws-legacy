@@ -108,7 +108,7 @@ inline uWS::WebSocket<isServer> *unwrapSocket(Local<External> external) {
 }
 
 inline Local<Value> wrapMessage(const char *message, size_t length, uWS::OpCode opCode, Isolate *isolate) {
-    return opCode == uWS::OpCode::BINARY ? (Local<Value>) ArrayBuffer::New(isolate, (char *) message, length) : (Local<Value>) String::NewFromUtf8(isolate, message, String::kNormalString, length);
+    return opCode == uWS::OpCode::BINARY ? (Local<Value>) ArrayBuffer::New(isolate, (char *) message, length) : (Local<Value>) String::NewFromUtf8(isolate, message, NewStringType::kNormal, length).ToLocalChecked();
 }
 
 template <bool isServer>
@@ -143,9 +143,9 @@ void getAddress(const FunctionCallbackInfo<Value> &args)
 {
     typename uWS::WebSocket<isServer>::Address address = unwrapSocket<isServer>(args[0].As<External>())->getAddress();
     Local<Array> array = Array::New(args.GetIsolate(), 3);
-    array->Set(0, Integer::New(args.GetIsolate(), address.port));
-    array->Set(1, String::NewFromUtf8(args.GetIsolate(), address.address));
-    array->Set(2, String::NewFromUtf8(args.GetIsolate(), address.family));
+    array->Set(isolate->GetCurrentContext(), 0, Integer::New(args.GetIsolate(), address.port));
+    array->Set(isolate->GetCurrentContext(), 1, String::NewFromUtf8(args.GetIsolate(), address.address).ToLocalChecked());
+    array->Set(isolate->GetCurrentContext(), 2, String::NewFromUtf8(args.GetIsolate(), address.family).ToLocalChecked());
     args.GetReturnValue().Set(array);
 }
 
@@ -231,7 +231,7 @@ void transfer(const FunctionCallbackInfo<Value> &args) {
     uv_handle_t *handle = nullptr;
     Ticket *ticket = new Ticket;
     if (args[0]->IsObject()) {
-        uv_fileno((handle = getTcpHandle(args[0]->ToObject()->GetAlignedPointerFromInternalField(0))), (uv_os_fd_t *) &ticket->fd);
+        uv_fileno((handle = getTcpHandle(args[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked()->GetAlignedPointerFromInternalField(0))), (uv_os_fd_t *) &ticket->fd);
     } else {
         ticket->fd = IntegerValue(args[0]);
     }
@@ -280,7 +280,7 @@ void onMessage(const FunctionCallbackInfo<Value> &args) {
         HandleScope hs(isolate);
         Local<Value> argv[] = {wrapMessage(message, length, opCode, isolate),
                                getDataV8(webSocket, isolate)};
-        Local<Function>::New(isolate, *messageCallback)->Call(isolate->GetCurrentContext()->Global(), 2, argv);
+        Local<Function>::New(isolate, *messageCallback)->Call(isolate->GetCurrentContext(), isolate->GetCurrentContext()->Global(), 2, argv);
     });
 }
 
@@ -411,7 +411,7 @@ void forEach(const FunctionCallbackInfo<Value> &args) {
         Local<Value> argv[] = {
             getDataV8(webSocket, isolate)
         };
-        cb->Call(Null(isolate), 1, argv);
+        cb->Call(isolate->GetCurrentContext(), Null(isolate), 1, argv);
     });
 }
 
@@ -470,6 +470,6 @@ struct Namespace {
         NODE_SET_METHOD(group, "terminate", terminateGroup<isServer>);
         NODE_SET_METHOD(group, "broadcast", broadcast<isServer>);
 
-        object->Set(String::NewFromUtf8(isolate, "group"), group);
+        object->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "group").ToLocalChecked(), group);
     }
 };

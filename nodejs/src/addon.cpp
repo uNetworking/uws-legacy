@@ -5,8 +5,8 @@
 void Main(Local<Object> exports) {
     isolate = exports->GetIsolate();
 
-    exports->Set(String::NewFromUtf8(isolate, "server"), Namespace<uWS::SERVER>(isolate).object);
-    exports->Set(String::NewFromUtf8(isolate, "client"), Namespace<uWS::CLIENT>(isolate).object);
+    exports->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "server").ToLocalChecked(), Namespace<uWS::SERVER>(isolate).object);
+    exports->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "client").ToLocalChecked(), Namespace<uWS::CLIENT>(isolate).object);
     //exports->Set(String::NewFromUtf8(isolate, "httpServer"), HttpServer::getHttpServer(isolate));
 
     NODE_SET_METHOD(exports, "setUserData", setUserData<uWS::SERVER>);
