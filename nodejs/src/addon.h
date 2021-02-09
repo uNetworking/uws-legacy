@@ -8,6 +8,15 @@
 using namespace std;
 using namespace v8;
 
+Isolate *isolate;
+
+int IntegerValue(Local<Value> value) {
+    long int ret = 0;
+    Maybe<long int> m = value->IntegerValue(isolate->GetCurrentContext());
+    m.To(&ret);
+    return ret;
+}
+
 uWS::Hub hub(0, true);
 uv_check_t check;
 Persistent<Function> noop;
@@ -34,7 +43,7 @@ public:
             data = nullptr;
             length = 0;
         } else if (value->IsString()) {
-            utf8Value = new (utf8ValueMemory) String::Utf8Value(value);
+            utf8Value = new (utf8ValueMemory) String::Utf8Value(isolate, value);
             data = (**utf8Value);
             length = utf8Value->length();
         } else if (node::Buffer::HasInstance(value)) {
@@ -76,7 +85,7 @@ struct GroupData {
 
 template <bool isServer>
 void createGroup(const FunctionCallbackInfo<Value> &args) {
-    uWS::Group<isServer> *group = hub.createGroup<isServer>(args[0]->IntegerValue(), args[1]->IntegerValue());
+    uWS::Group<isServer> *group = hub.createGroup<isServer>(IntegerValue(args[0]), IntegerValue(args[1]));
     group->setUserData(new GroupData);
     args.GetReturnValue().Set(External::New(args.GetIsolate(), group));
 }
@@ -169,7 +178,7 @@ void sendCallback(uWS::WebSocket<isServer> *webSocket, void *data, bool cancelle
 template <bool isServer>
 void send(const FunctionCallbackInfo<Value> &args)
 {
-    uWS::OpCode opCode = (uWS::OpCode) args[2]->IntegerValue();
+    uWS::OpCode opCode = (uWS::OpCode) IntegerValue(args[2]);
     NativeString nativeString(args[1]);
 
     SendCallbackData *sc = nullptr;
@@ -181,8 +190,8 @@ void send(const FunctionCallbackInfo<Value> &args)
         sc->jsCallback.Reset(args.GetIsolate(), Local<Function>::Cast(args[3]));
         sc->isolate = args.GetIsolate();
     }
-    
-    bool compress = args[4]->BooleanValue();
+
+    bool compress = args[4]->BooleanValue(isolate);
 
     unwrapSocket<isServer>(args[0].As<External>())->send(nativeString.getData(),
                            nativeString.getLength(), opCode, callback, sc, compress);
@@ -224,7 +233,7 @@ void transfer(const FunctionCallbackInfo<Value> &args) {
     if (args[0]->IsObject()) {
         uv_fileno((handle = getTcpHandle(args[0]->ToObject()->GetAlignedPointerFromInternalField(0))), (uv_os_fd_t *) &ticket->fd);
     } else {
-        ticket->fd = args[0]->IntegerValue();
+        ticket->fd = IntegerValue(args[0]);
     }
 
     ticket->fd = dup(ticket->fd);
@@ -348,7 +357,7 @@ void onError(const FunctionCallbackInfo<Value> &args) {
 template <bool isServer>
 void closeSocket(const FunctionCallbackInfo<Value> &args) {
     NativeString nativeString(args[2]);
-    unwrapSocket<isServer>(args[0].As<External>())->close(args[1]->IntegerValue(), nativeString.getData(), nativeString.getLength());
+    unwrapSocket<isServer>(args[0].As<External>())->close(IntegerValue(args[1]), nativeString.getData(), nativeString.getLength());
 }
 
 template <bool isServer>
@@ -360,7 +369,7 @@ template <bool isServer>
 void closeGroup(const FunctionCallbackInfo<Value> &args) {
     NativeString nativeString(args[2]);
     uWS::Group<isServer> *group = (uWS::Group<isServer> *) args[0].As<External>()->Value();
-    group->close(args[1]->IntegerValue(), nativeString.getData(), nativeString.getLength());
+    group->close(IntegerValue(args[1]), nativeString.getData(), nativeString.getLength());
 }
 
 template <bool isServer>
@@ -371,14 +380,14 @@ void terminateGroup(const FunctionCallbackInfo<Value> &args) {
 template <bool isServer>
 void broadcast(const FunctionCallbackInfo<Value> &args) {
     uWS::Group<isServer> *group = (uWS::Group<isServer> *) args[0].As<External>()->Value();
-    uWS::OpCode opCode = args[2]->BooleanValue() ? uWS::OpCode::BINARY : uWS::OpCode::TEXT;
+    uWS::OpCode opCode = args[2]->BooleanValue(isolate) ? uWS::OpCode::BINARY : uWS::OpCode::TEXT;
     NativeString nativeString(args[1]);
     group->broadcast(nativeString.getData(), nativeString.getLength(), opCode);
 }
 
 template <bool isServer>
 void prepareMessage(const FunctionCallbackInfo<Value> &args) {
-    uWS::OpCode opCode = (uWS::OpCode) args[1]->IntegerValue();
+    uWS::OpCode opCode = (uWS::OpCode) IntegerValue(args[1]);
     NativeString nativeString(args[0]);
     args.GetReturnValue().Set(External::New(args.GetIsolate(), uWS::WebSocket<isServer>::prepareMessage(nativeString.getData(), nativeString.getLength(), opCode, false)));
 }
@@ -415,7 +424,7 @@ void getSize(const FunctionCallbackInfo<Value> &args) {
 void startAutoPing(const FunctionCallbackInfo<Value> &args) {
     uWS::Group<uWS::SERVER> *group = (uWS::Group<uWS::SERVER> *) args[0].As<External>()->Value();
     NativeString nativeString(args[2]);
-    group->startAutoPing(args[1]->IntegerValue(), std::string(nativeString.getData(), nativeString.getLength()));
+    group->startAutoPing(IntegerValue(args[1]), std::string(nativeString.getData(), nativeString.getLength()));
 }
 
 void setNoop(const FunctionCallbackInfo<Value> &args) {
@@ -424,7 +433,7 @@ void setNoop(const FunctionCallbackInfo<Value> &args) {
 
 void listen(const FunctionCallbackInfo<Value> &args) {
     uWS::Group<uWS::SERVER> *group = (uWS::Group<uWS::SERVER> *) args[0].As<External>()->Value();
-    hub.listen(args[1]->IntegerValue(), nullptr, 0, group);
+    hub.listen(IntegerValue(args[1]), nullptr, 0, group);
 }
 
 template <bool isServer>

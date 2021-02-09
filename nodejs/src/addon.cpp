@@ -3,7 +3,7 @@
 //#include "http.h"
 
 void Main(Local<Object> exports) {
-    Isolate *isolate = exports->GetIsolate();
+    isolate = exports->GetIsolate();
 
     exports->Set(String::NewFromUtf8(isolate, "server"), Namespace<uWS::SERVER>(isolate).object);
     exports->Set(String::NewFromUtf8(isolate, "client"), Namespace<uWS::CLIENT>(isolate).object);
