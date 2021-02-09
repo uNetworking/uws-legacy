@@ -1,13 +1,13 @@
 #include "../src/uWS.h"
 #include "addon.h"
-#include "http.h"
+//#include "http.h"
 
 void Main(Local<Object> exports) {
     Isolate *isolate = exports->GetIsolate();
 
     exports->Set(String::NewFromUtf8(isolate, "server"), Namespace<uWS::SERVER>(isolate).object);
     exports->Set(String::NewFromUtf8(isolate, "client"), Namespace<uWS::CLIENT>(isolate).object);
-    exports->Set(String::NewFromUtf8(isolate, "httpServer"), HttpServer::getHttpServer(isolate));
+    //exports->Set(String::NewFromUtf8(isolate, "httpServer"), HttpServer::getHttpServer(isolate));
 
     NODE_SET_METHOD(exports, "setUserData", setUserData<uWS::SERVER>);
     NODE_SET_METHOD(exports, "getUserData", getUserData<uWS::SERVER>);
