@@ -1,4 +1,4 @@
-CPP_SHARED := -DUSE_LIBUV -std=c++11 -O3 -I ../uWebSockets/src -shared -fPIC ../uWebSockets/src/Extensions.cpp ../uWebSockets/src/Group.cpp ../uWebSockets/src/Networking.cpp ../uWebSockets/src/Hub.cpp ../uWebSockets/src/Node.cpp ../uWebSockets/src/WebSocket.cpp ../uWebSockets/src/HTTPSocket.cpp ../uWebSockets/src/Socket.cpp ../uWebSockets/src/Epoll.cpp src/addon.cpp
+CPP_SHARED := -DUSE_LIBUV -std=c++11 -O3 -I uWebSockets/src -shared -fPIC uWebSockets/src/Extensions.cpp uWebSockets/src/Group.cpp uWebSockets/src/Networking.cpp uWebSockets/src/Hub.cpp uWebSockets/src/Node.cpp uWebSockets/src/WebSocket.cpp uWebSockets/src/HTTPSocket.cpp uWebSockets/src/Socket.cpp uWebSockets/src/Epoll.cpp src/addon.cpp
 CPP_OSX := -stdlib=libc++ -mmacosx-version-min=10.7 -undefined dynamic_lookup
 
 default:
